@@ -1,0 +1,538 @@
+/* ==============================================================
+   Aurelia — Private Dental Atelier
+   Stylesheet (extracted from index.html)
+   ============================================================== */
+
+/* ============================================================
+   AURELIA — Design tokens
+   ============================================================ */
+:root{
+  --porcelain:#F7F5F1;
+  --porcelain-2:#FBFAF7;
+  --ink:#14161A;
+  --ink-soft:#6A6E78;
+  --line:rgba(20,22,26,.10);
+  --line-strong:rgba(20,22,26,.16);
+  --g1:#FF9A7A;
+  --g2:#FF6FA0;
+  --g3:#8B7BFF;
+  --aubergine:#1A1020;
+  --glow: radial-gradient(120% 120% at 50% 0%, var(--g1), var(--g2) 45%, var(--g3));
+  --shadow-sm: 0 1px 2px rgba(20,22,26,.04), 0 6px 18px rgba(20,22,26,.05);
+  --shadow-md: 0 2px 6px rgba(20,22,26,.05), 0 20px 50px rgba(20,22,26,.10);
+  --shadow-lg: 0 8px 24px rgba(20,22,26,.08), 0 40px 90px rgba(20,22,26,.14);
+  --glass: rgba(255,255,255,.55);
+  --glass-line: rgba(255,255,255,.7);
+  --r-sm:14px; --r-md:22px; --r-lg:30px; --r-xl:40px;
+  --ease: cubic-bezier(.22,.61,.36,1);
+  --maxw:1240px;
+  --pad: clamp(20px, 5vw, 80px);
+}
+
+/* ============================================================
+   Reset & base
+   ============================================================ */
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{ -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility; scroll-behavior:smooth; }
+html.lenis,html.lenis body{height:auto}
+.lenis.lenis-smooth{scroll-behavior:auto!important}
+.lenis.lenis-smooth [data-lenis-prevent]{overscroll-behavior:contain}
+.lenis.lenis-stopped{overflow:hidden}
+
+body{
+  font-family:'Manrope',system-ui,sans-serif;
+  background:var(--porcelain);
+  color:var(--ink);
+  line-height:1.55;
+  font-size:clamp(15px,1.05vw,17px);
+  overflow-x:hidden;
+  position:relative;
+}
+img,svg{display:block;max-width:100%}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit;cursor:pointer;background:none;border:none}
+::selection{background:var(--g2);color:#fff}
+
+/* faint grain + ambient field */
+body::before{
+  content:""; position:fixed; inset:0; z-index:0; pointer-events:none;
+  background:
+    radial-gradient(60% 50% at 85% -5%, rgba(255,154,122,.16), transparent 60%),
+    radial-gradient(50% 45% at 8% 8%, rgba(139,123,255,.12), transparent 60%);
+}
+.grain{
+  position:fixed; inset:0; z-index:1; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.05'/%3E%3C/svg%3E");
+}
+
+/* cursor-following enamel glow — the signature element */
+.cursor-glow{
+  position:fixed; top:0; left:0; z-index:2; pointer-events:none;
+  width:520px; height:520px; margin:-260px 0 0 -260px; border-radius:50%;
+  background:radial-gradient(circle, rgba(255,138,167,.20), rgba(139,123,255,.12) 38%, transparent 66%);
+  filter:blur(8px); opacity:0; will-change:transform,opacity; transition:opacity .5s ease;
+}
+
+/* ============================================================
+   Ambient dental layer — floating enamel teeth + soft particles.
+   Sits above the page background, below all content (z-index:3).
+   ============================================================ */
+.ambient{position:fixed; inset:0; z-index:1; pointer-events:none; overflow:hidden}
+.amb-tooth{position:absolute; will-change:transform; opacity:.16}
+.amb-tooth svg{display:block; width:100%; height:100%}
+.amb-tooth path{fill:none; stroke:url(#ig); stroke-width:2.4; vector-effect:non-scaling-stroke}
+.amb-particle{position:absolute; border-radius:50%; will-change:transform; filter:blur(14px); opacity:.45}
+.amb-arc{position:absolute; will-change:transform; opacity:.5}
+.amb-arc path{fill:none; stroke:url(#ig); stroke-width:1.4; stroke-dasharray:2 7; opacity:.5}
+
+/* faint tooth watermark so opaque sections still read "dental" */
+.why, .testi{position:relative}
+.why::after, .testi::after, .tech::after, .contact::after{
+  content:""; position:absolute; z-index:0; pointer-events:none;
+  width:min(42vw,420px); aspect-ratio:100/120; right:-50px; bottom:-60px;
+  background-position:center; background-repeat:no-repeat; background-size:contain;
+}
+.tech, .contact{ }
+.why .wrap, .testi .wrap, .tech .wrap, .contact .wrap, .tech-pin{position:relative; z-index:2}
+.testi-track{position:relative; z-index:2}
+.why::after, .testi::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20120%27%3E%3Cpath%20d%3D%27M9%2041%20C5%2021%2C18%207%2C31%2014%20C40%2019%2C46%2019%2C50%2016%20C54%2019%2C60%2019%2C69%2014%20C82%207%2C95%2021%2C91%2041%20C88%2058%2C85%2067%2C80%2083%20C75%2097%2C74%20112%2C68%20115%20C64%20117%2C60%20103%2C56%2091%20C54%2085%2C52%2084%2C50%2086%20C48%2084%2C46%2085%2C44%2091%20C40%20103%2C36%20117%2C32%20115%20C26%20112%2C25%2097%2C20%2083%20C15%2067%2C12%2058%2C9%2041%20Z%27%20fill%3D%27none%27%20stroke%3D%27%238B7BFF%27%20stroke-width%3D%272%27%20opacity%3D%270.5%27%2F%3E%3C%2Fsvg%3E"); opacity:.14 }
+.tech::after, .contact::after{ background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%27http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%27%20viewBox%3D%270%200%20100%20120%27%3E%3Cpath%20d%3D%27M9%2041%20C5%2021%2C18%207%2C31%2014%20C40%2019%2C46%2019%2C50%2016%20C54%2019%2C60%2019%2C69%2014%20C82%207%2C95%2021%2C91%2041%20C88%2058%2C85%2067%2C80%2083%20C75%2097%2C74%20112%2C68%20115%20C64%20117%2C60%20103%2C56%2091%20C54%2085%2C52%2084%2C50%2086%20C48%2084%2C46%2085%2C44%2091%20C40%20103%2C36%20117%2C32%20115%20C26%20112%2C25%2097%2C20%2083%20C15%2067%2C12%2058%2C9%2041%20Z%27%20fill%3D%27none%27%20stroke%3D%27%23EADFF6%27%20stroke-width%3D%272%27%20opacity%3D%270.5%27%2F%3E%3C%2Fsvg%3E"); opacity:.16 }
+
+
+/* ============================================================
+   Layout helpers
+   ============================================================ */
+.wrap{width:min(100% - 2*var(--pad), var(--maxw)); margin-inline:auto}
+.section{position:relative; z-index:3; padding-block:clamp(80px,11vw,160px)}
+.eyebrow{
+  font-size:.72rem; font-weight:600; letter-spacing:.22em; text-transform:uppercase;
+  color:var(--ink-soft); display:inline-flex; align-items:center; gap:.6em;
+}
+.eyebrow::before{content:""; width:26px; height:1px; background:var(--ink); opacity:.4}
+.eyebrow.center::before{display:none}
+
+h1,h2,h3,h4{font-family:'Fraunces',Georgia,serif; font-weight:400; line-height:1.02; letter-spacing:-.018em}
+.display{font-size:clamp(2.9rem,8.2vw,7.1rem); font-weight:300}
+.h2{font-size:clamp(2.1rem,4.6vw,4rem); font-weight:300}
+.h3{font-size:clamp(1.35rem,2vw,1.85rem)}
+.lead{font-size:clamp(1.05rem,1.45vw,1.32rem); color:var(--ink-soft); max-width:46ch; line-height:1.5}
+.shine{
+  background:linear-gradient(100deg,var(--g1),var(--g2) 42%,var(--g3) 88%);
+  background-size:220% 100%;
+  -webkit-background-clip:text; background-clip:text; color:transparent;
+  font-style:italic;
+}
+
+/* ============================================================
+   Buttons (no generic buttons)
+   ============================================================ */
+.btn{
+  --bgc:var(--ink); --fg:#fff;
+  position:relative; display:inline-flex; align-items:center; gap:.6em;
+  padding:1.02em 1.6em; border-radius:100px; font-weight:600; font-size:.95rem;
+  color:var(--fg); background:var(--bgc); overflow:hidden; isolation:isolate;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease);
+  will-change:transform; box-shadow:var(--shadow-sm);
+}
+.btn .lbl{position:relative; z-index:2; display:inline-flex; align-items:center; gap:.55em}
+.btn::after{ /* ripple/glow fill */
+  content:""; position:absolute; inset:0; z-index:1; border-radius:inherit;
+  background:var(--glow); transform:scale(0); opacity:0;
+  transition:transform .55s var(--ease), opacity .4s ease;
+}
+.btn:hover{box-shadow:var(--shadow-md)}
+.btn:hover::after{transform:scale(1.6); opacity:1}
+.btn:active{transform:scale(.97)}
+.btn svg{transition:transform .4s var(--ease)}
+.btn:hover svg{transform:translateX(4px)}
+.btn.ghost{--bgc:transparent; --fg:var(--ink); box-shadow:inset 0 0 0 1px var(--line-strong)}
+.btn.ghost::after{opacity:0!important}
+.btn.ghost:hover{box-shadow:inset 0 0 0 1px var(--ink)}
+.btn.lg{padding:1.15em 1.9em; font-size:1rem}
+.magnetic{will-change:transform}
+
+:focus-visible{outline:2px solid var(--g3); outline-offset:3px; border-radius:6px}
+
+/* ============================================================
+   Navigation
+   ============================================================ */
+.nav{
+  position:fixed; top:0; left:0; right:0; z-index:50;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:18px var(--pad); transition:padding .4s var(--ease);
+}
+.nav-inner{
+  width:min(100% , var(--maxw)); margin-inline:auto;
+  display:flex; align-items:center; justify-content:space-between; gap:24px;
+  padding:10px 12px 10px 22px; border-radius:100px;
+  background:var(--glass); backdrop-filter:blur(16px) saturate(1.4); -webkit-backdrop-filter:blur(16px) saturate(1.4);
+  box-shadow:0 1px 0 var(--glass-line) inset, var(--shadow-sm);
+  border:1px solid rgba(255,255,255,.5);
+  transition:box-shadow .4s var(--ease), background .4s var(--ease);
+}
+.nav.scrolled .nav-inner{box-shadow:0 1px 0 var(--glass-line) inset, var(--shadow-md); background:rgba(255,255,255,.7)}
+.brand{display:flex; align-items:center; gap:.6em; font-family:'Fraunces',serif; font-size:1.3rem; letter-spacing:-.02em}
+.brand .dot{width:26px;height:26px;border-radius:50%;background:var(--glow); box-shadow:0 4px 14px rgba(255,111,160,.45)}
+.nav-links{display:flex; gap:4px; align-items:center}
+.nav-links a{
+  position:relative; padding:.55em .9em; border-radius:100px; font-size:.92rem; font-weight:500; color:var(--ink-soft);
+  transition:color .3s ease;
+}
+.nav-links a::after{content:""; position:absolute; left:50%; bottom:.35em; width:0; height:5px; border-radius:5px; background:var(--glow); transform:translateX(-50%); transition:width .3s var(--ease); opacity:.9}
+.nav-links a:hover{color:var(--ink)} .nav-links a:hover::after{width:18px}
+.nav-cta{display:flex; align-items:center; gap:10px}
+.burger{display:none; width:44px;height:44px;border-radius:50%; align-items:center; justify-content:center; box-shadow:inset 0 0 0 1px var(--line-strong)}
+.burger span{display:block;width:18px;height:1.5px;background:var(--ink);position:relative;transition:.3s}
+.burger span::before,.burger span::after{content:"";position:absolute;left:0;width:18px;height:1.5px;background:var(--ink);transition:.3s}
+.burger span::before{top:-6px}.burger span::after{top:6px}
+body.menu-open .burger span{background:transparent}
+body.menu-open .burger span::before{top:0;transform:rotate(45deg)}
+body.menu-open .burger span::after{top:0;transform:rotate(-45deg)}
+
+.mobile-menu{
+  position:fixed; inset:0; z-index:45; background:rgba(247,245,241,.92);
+  backdrop-filter:blur(20px); -webkit-backdrop-filter:blur(20px);
+  display:flex; flex-direction:column; justify-content:center; gap:6px; padding:var(--pad);
+  transform:translateY(-100%); transition:transform .6s var(--ease); pointer-events:none;
+}
+body.menu-open .mobile-menu{transform:translateY(0); pointer-events:auto}
+.mobile-menu a{font-family:'Fraunces',serif; font-size:clamp(2rem,8vw,3.2rem); font-weight:300; padding:.12em 0; opacity:.85}
+.mobile-menu a:hover{opacity:1}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero{position:relative; z-index:3; min-height:100svh; display:flex; align-items:center; padding-top:120px; padding-bottom:60px; overflow:hidden}
+.hero-grid{display:grid; grid-template-columns:1.15fr .85fr; gap:clamp(30px,5vw,70px); align-items:center; width:100%}
+.hero h1{margin:.28em 0 .5em}
+.hero .word{display:inline-block; overflow:hidden; vertical-align:top}
+.hero .word > span{display:inline-block; will-change:transform}
+.hero-cta{display:flex; gap:14px; flex-wrap:wrap; margin-top:clamp(22px,3vw,34px)}
+.hero-meta{display:flex; gap:26px; margin-top:34px; flex-wrap:wrap}
+.hero-meta .m{font-size:.86rem; color:var(--ink-soft)}
+.hero-meta .m b{display:block; font-family:'Fraunces',serif; font-size:1.5rem; color:var(--ink); font-weight:400}
+
+/* floating glass collage */
+.hero-art{position:relative; aspect-ratio:1/1.08; min-height:340px}
+.smile-orb{
+  position:absolute; inset:3% 6% 3% 6%;
+  background:
+    radial-gradient(120% 120% at 30% 20%, rgba(255,255,255,.9), transparent 40%),
+    conic-gradient(from 200deg at 50% 50%, var(--g1), var(--g2), var(--g3), var(--g1));
+  filter:saturate(1.05) drop-shadow(0 28px 46px rgba(124,70,120,.30));
+  -webkit-clip-path:url(#toothClip); clip-path:url(#toothClip);
+  will-change:transform;
+}
+/* soft directional shading for a rounded, 3D enamel feel */
+.smile-orb::before{content:""; position:absolute; inset:0;
+  background:linear-gradient(150deg, rgba(255,255,255,.45) 0%, transparent 34%, transparent 60%, rgba(70,30,64,.22) 100%);
+  mix-blend-mode:soft-light}
+.smile-orb::after{content:""; position:absolute; inset:18% 26% 40% 22%; border-radius:50%; background:radial-gradient(60% 60% at 35% 30%, rgba(255,255,255,.6), transparent 70%); mix-blend-mode:overlay}
+.fcard{
+  position:absolute; padding:14px 18px; border-radius:18px;
+  background:var(--glass); backdrop-filter:blur(14px); -webkit-backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,.65); box-shadow:var(--shadow-md);
+  display:flex; flex-direction:column; gap:2px; will-change:transform;
+}
+.fcard .k{font-family:'Fraunces',serif; font-size:1.5rem; line-height:1}
+.fcard .v{font-size:.74rem; color:var(--ink-soft); letter-spacing:.02em}
+.fcard.a{top:6%; right:-2%}
+.fcard.b{bottom:14%; left:-6%}
+.fcard.c{bottom:-2%; right:8%; flex-direction:row; align-items:center; gap:10px}
+.stars{display:flex; gap:2px; color:var(--g2)}
+.scroll-cue{position:absolute; bottom:26px; left:var(--pad); display:flex; align-items:center; gap:10px; font-size:.74rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft)}
+.scroll-cue i{display:block;width:1px;height:34px;background:linear-gradient(var(--ink),transparent);position:relative;overflow:hidden}
+.scroll-cue i::after{content:"";position:absolute;top:-100%;left:0;width:1px;height:100%;background:var(--g2);animation:cue 1.8s var(--ease) infinite}
+@keyframes cue{to{top:120%}}
+
+/* ============================================================
+   Marquee trust bar
+   ============================================================ */
+.trust{position:relative; z-index:3; padding-block:34px; border-block:1px solid var(--line); overflow:hidden}
+.marquee{display:flex; gap:0; white-space:nowrap; width:max-content; will-change:transform}
+.marquee .item{display:inline-flex; align-items:center; gap:14px; padding:0 38px; font-family:'Fraunces',serif; font-size:clamp(1.2rem,2vw,1.7rem); color:var(--ink); opacity:.55}
+.marquee .item svg{opacity:.8}
+.marquee .sep{width:7px;height:7px;border-radius:50%;background:var(--glow)}
+
+/* ============================================================
+   Section headers
+   ============================================================ */
+.shead{display:grid; grid-template-columns:1fr 1fr; gap:30px; align-items:end; margin-bottom:clamp(40px,5vw,68px)}
+.shead .lead{margin-top:14px}
+.shead.center{text-align:center; grid-template-columns:1fr; justify-items:center}
+.shead.center .lead{margin-inline:auto}
+
+/* ============================================================
+   Services — bento
+   ============================================================ */
+.bento{display:grid; grid-template-columns:repeat(6,1fr); gap:16px}
+.svc{
+  position:relative; padding:clamp(22px,2.4vw,34px); border-radius:var(--r-lg); background:var(--porcelain-2);
+  border:1px solid var(--line); overflow:hidden; min-height:230px; display:flex; flex-direction:column; justify-content:space-between;
+  transition:transform .5s var(--ease), box-shadow .5s var(--ease), border-color .5s var(--ease);
+  will-change:transform;
+}
+.svc::before{content:""; position:absolute; inset:0; border-radius:inherit; padding:1px; background:var(--glow); -webkit-mask:linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite:xor; mask-composite:exclude; opacity:0; transition:opacity .5s ease}
+.svc:hover{transform:translateY(-6px); box-shadow:var(--shadow-md); border-color:transparent}
+.svc:hover::before{opacity:1}
+.svc .num{font-size:.72rem; letter-spacing:.18em; color:var(--ink-soft); font-weight:600}
+.svc h3{margin:.5em 0 .35em}
+.svc p{font-size:.95rem; color:var(--ink-soft); max-width:36ch}
+.svc .ico{width:48px;height:48px;border-radius:14px; display:grid; place-items:center; background:#fff; box-shadow:var(--shadow-sm); margin-bottom:auto}
+.svc .ico svg{stroke:url(#ig)}
+.svc.wide{grid-column:span 3} .svc.tall{grid-column:span 3}
+.svc.feat{grid-column:span 6; min-height:200px; flex-direction:row; align-items:center; gap:34px; background:var(--ink); color:var(--porcelain)}
+.svc.feat p{color:rgba(247,245,241,.7); max-width:48ch}
+.svc.feat .ico{background:rgba(255,255,255,.08)}
+.svc.feat:hover{transform:translateY(-6px)}
+.svc.feat .featnum{font-family:'Fraunces',serif; font-size:clamp(3rem,7vw,5.5rem); line-height:.9; color:transparent; -webkit-text-stroke:1px rgba(247,245,241,.4)}
+@media(min-width:721px){.svc.s2{grid-column:span 2}.svc.s3{grid-column:span 3}}
+
+/* ============================================================
+   Why us — counters
+   ============================================================ */
+.why{background:var(--porcelain-2); border-block:1px solid var(--line)}
+.stats{display:grid; grid-template-columns:repeat(4,1fr); gap:24px; margin-top:10px}
+.stat{padding:28px 0; border-top:1px solid var(--line-strong)}
+.stat .big{font-family:'Fraunces',serif; font-size:clamp(2.6rem,5vw,4.4rem); font-weight:300; line-height:1; letter-spacing:-.02em}
+.stat .big .suf{font-size:.45em; vertical-align:super; color:var(--g2)}
+.stat .lbl{margin-top:10px; font-size:.92rem; color:var(--ink-soft); max-width:24ch}
+.why-copy{display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:start}
+.pillars{display:flex; flex-direction:column; gap:2px}
+.pillar{display:flex; gap:18px; padding:20px 0; border-bottom:1px solid var(--line)}
+.pillar .pn{font-family:'Fraunces',serif; color:var(--ink-soft); font-size:1.1rem; min-width:38px}
+.pillar h4{font-family:'Manrope',sans-serif; font-weight:700; font-size:1.05rem; margin-bottom:4px}
+.pillar p{font-size:.92rem; color:var(--ink-soft)}
+
+/* ============================================================
+   Smile gallery — before/after
+   ============================================================ */
+.ba-wrap{display:grid; grid-template-columns:1fr 1fr; gap:clamp(28px,4vw,56px); align-items:center}
+.ba{position:relative; aspect-ratio:4/3.2; border-radius:var(--r-lg); overflow:hidden; box-shadow:var(--shadow-lg); user-select:none; touch-action:none; cursor:ew-resize}
+.ba .pane{position:absolute; inset:0; display:grid; place-items:center}
+.ba .smile{width:62%; aspect-ratio:1/.62; border-radius:0 0 120px 120px / 0 0 90px 90px; position:relative; overflow:hidden}
+.ba .lbl{position:absolute; top:16px; padding:.4em .9em; border-radius:100px; font-size:.72rem; letter-spacing:.14em; text-transform:uppercase; font-weight:600; background:rgba(255,255,255,.85); backdrop-filter:blur(6px)}
+.ba .before{background:linear-gradient(150deg,#e9e3da,#d8cfc2)}
+.ba .before .smile{background:linear-gradient(#cdbfa9,#b9a98f)}
+.ba .before .lbl{left:16px}
+.ba .after{background:linear-gradient(150deg,#fff,#f1ecff); clip-path:inset(0 0 0 var(--rev,50%))}
+.ba .after .smile{background:linear-gradient(#ffffff,#f3f0ff); box-shadow:inset 0 0 40px rgba(139,123,255,.18)}
+.ba .after .lbl{right:16px; background:var(--ink); color:#fff}
+.ba .handle{position:absolute; top:0; bottom:0; left:var(--rev,50%); width:2px; background:#fff; box-shadow:0 0 0 1px rgba(20,22,26,.1); z-index:3; transform:translateX(-1px)}
+.ba .grip{position:absolute; top:50%; left:var(--rev,50%); transform:translate(-50%,-50%); width:48px;height:48px;border-radius:50%; background:#fff; box-shadow:var(--shadow-md); z-index:4; display:grid; place-items:center; color:var(--ink)}
+.ba-copy .case{display:flex; gap:14px; align-items:center; margin-top:24px; flex-wrap:wrap}
+.ba-copy .chip{padding:.5em 1em; border-radius:100px; font-size:.82rem; background:#fff; box-shadow:var(--shadow-sm)}
+
+/* ============================================================
+   Technology — dark chapter
+   ============================================================ */
+.tech{background:var(--aubergine); color:var(--porcelain); position:relative; z-index:3; overflow:hidden}
+.tech::before{content:""; position:absolute; inset:0; background:radial-gradient(60% 50% at 80% 0%, rgba(139,123,255,.25), transparent 60%), radial-gradient(50% 50% at 0% 100%, rgba(255,138,167,.18), transparent 60%)}
+.tech .eyebrow{color:rgba(247,245,241,.6)} .tech .eyebrow::before{background:var(--porcelain)}
+.tech .lead{color:rgba(247,245,241,.66)}
+.tech-track{display:flex; gap:22px}
+.tcard{
+  flex:0 0 clamp(260px,30vw,360px); padding:30px; border-radius:var(--r-lg);
+  background:rgba(255,255,255,.045); border:1px solid rgba(255,255,255,.1);
+  backdrop-filter:blur(8px); min-height:330px; display:flex; flex-direction:column;
+}
+.tcard .tnum{font-family:'Fraunces',serif; font-size:2.4rem; color:transparent; -webkit-text-stroke:1px rgba(247,245,241,.35); margin-bottom:auto}
+.tcard h3{margin:.4em 0} .tcard p{color:rgba(247,245,241,.62); font-size:.95rem}
+.tcard .ico{width:50px;height:50px;border-radius:14px; background:rgba(255,255,255,.07); display:grid; place-items:center; margin-bottom:22px}
+.tech-pin{position:relative}
+
+/* ============================================================
+   Team
+   ============================================================ */
+.team{display:grid; grid-template-columns:repeat(3,1fr); gap:24px}
+.member{position:relative; border-radius:var(--r-lg); overflow:hidden; background:var(--porcelain-2); border:1px solid var(--line)}
+.member .photo{aspect-ratio:4/4.6; position:relative; overflow:hidden}
+.member .photo .blob{position:absolute; inset:0; background:conic-gradient(from 140deg,var(--g3),var(--g2),var(--g1),var(--g3)); filter:saturate(.85) brightness(1.04); transform:scale(1.06); transition:transform .9s var(--ease), filter .6s ease; opacity:.9}
+.member .photo .ini{position:absolute; inset:0; display:grid; place-items:center; font-family:'Fraunces',serif; font-size:4rem; color:rgba(255,255,255,.9)}
+.member:hover .photo .blob{transform:scale(1); filter:saturate(1.1) brightness(1.08)}
+.member .info{padding:20px 22px}
+.member .info h3{font-size:1.3rem} .member .info .role{font-size:.84rem; color:var(--ink-soft); margin-top:2px}
+.member .info .gdc{margin-top:10px; font-size:.74rem; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft)}
+
+/* ============================================================
+   Testimonials
+   ============================================================ */
+.testi{background:var(--porcelain-2); border-block:1px solid var(--line); overflow:hidden}
+.testi-track{display:flex; gap:22px; will-change:transform}
+.quote{
+  flex:0 0 clamp(280px,34vw,420px); padding:32px; border-radius:var(--r-lg);
+  background:#fff; box-shadow:var(--shadow-sm); border:1px solid var(--line); display:flex; flex-direction:column; gap:18px;
+}
+.quote .stars{color:var(--g2)}
+.quote blockquote{font-family:'Fraunces',serif; font-size:1.32rem; font-weight:300; line-height:1.32; letter-spacing:-.01em}
+.quote .who{display:flex; align-items:center; gap:12px; margin-top:auto}
+.quote .av{width:42px;height:42px;border-radius:50%; background:var(--glow); display:grid; place-items:center; color:#fff; font-family:'Fraunces',serif; font-size:1rem}
+.quote .who b{font-weight:700; font-size:.95rem} .quote .who span{display:block; font-size:.8rem; color:var(--ink-soft)}
+
+/* ============================================================
+   Process timeline
+   ============================================================ */
+.process{position:relative}
+.timeline{position:relative; margin-top:30px; padding-left:0}
+.tl-line{position:absolute; left:max(calc(50% - .5px),28px); top:0; bottom:0; width:2px; background:var(--line-strong)}
+.tl-fill{position:absolute; left:max(calc(50% - 1.5px),27px); top:0; width:4px; border-radius:4px; background:var(--glow); height:0; transform-origin:top}
+.step{position:relative; display:grid; grid-template-columns:1fr 1fr; gap:40px; padding:34px 0}
+.step .node{position:absolute; left:max(calc(50% - 11px),17px); top:42px; width:22px;height:22px;border-radius:50%; background:var(--porcelain); box-shadow:inset 0 0 0 2px var(--line-strong); z-index:2; transition:.4s}
+.step.on .node{box-shadow:inset 0 0 0 6px transparent; background:var(--glow)}
+.step .cell{background:var(--porcelain-2); border:1px solid var(--line); border-radius:var(--r-md); padding:26px}
+.step .sn{font-family:'Fraunces',serif; font-size:.95rem; color:var(--ink-soft)}
+.step h3{margin:.3em 0} .step p{font-size:.94rem; color:var(--ink-soft)}
+.step:nth-child(odd) .right{visibility:hidden}
+.step:nth-child(even) .left{visibility:hidden}
+
+/* ============================================================
+   Financing
+   ============================================================ */
+.fin{display:grid; grid-template-columns:repeat(3,1fr); gap:20px}
+.plan{padding:32px; border-radius:var(--r-lg); background:var(--porcelain-2); border:1px solid var(--line); display:flex; flex-direction:column; gap:14px; transition:transform .45s var(--ease), box-shadow .45s var(--ease)}
+.plan:hover{transform:translateY(-6px); box-shadow:var(--shadow-md)}
+.plan.hot{background:var(--ink); color:var(--porcelain); position:relative}
+.plan.hot p{color:rgba(247,245,241,.66)}
+.plan .tag{align-self:flex-start; padding:.4em .9em; border-radius:100px; font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; font-weight:600; background:#fff; box-shadow:var(--shadow-sm)}
+.plan.hot .tag{background:var(--glow); color:#fff}
+.plan .price{font-family:'Fraunces',serif; font-size:clamp(2.4rem,5vw,3.4rem); font-weight:300; line-height:1}
+.plan .price small{font-size:.32em; color:var(--ink-soft); letter-spacing:.05em}
+.plan.hot .price small{color:rgba(247,245,241,.6)}
+.plan ul{list-style:none; display:flex; flex-direction:column; gap:10px; font-size:.94rem}
+.plan li{display:flex; gap:10px; align-items:flex-start}
+.plan li svg{flex:none; margin-top:3px}
+.plan .btn{margin-top:auto; justify-content:center}
+.plan.hot .btn{--bgc:var(--porcelain); --fg:var(--ink)}
+
+/* ============================================================
+   FAQ accordion
+   ============================================================ */
+.faq-grid{display:grid; grid-template-columns:.8fr 1.2fr; gap:clamp(30px,5vw,70px); align-items:start}
+.acc{border-top:1px solid var(--line-strong)}
+.acc-item{border-bottom:1px solid var(--line)}
+.acc-q{width:100%; display:flex; justify-content:space-between; align-items:center; gap:20px; text-align:left; padding:24px 0; font-size:1.12rem; font-family:'Fraunces',serif; font-weight:400}
+.acc-q .pm{flex:none; width:30px;height:30px;border-radius:50%; box-shadow:inset 0 0 0 1px var(--line-strong); display:grid; place-items:center; position:relative; transition:.4s}
+.acc-q .pm::before,.acc-q .pm::after{content:""; position:absolute; background:var(--ink); transition:.4s}
+.acc-q .pm::before{width:12px;height:1.5px} .acc-q .pm::after{width:1.5px;height:12px}
+.acc-item.open .pm{background:var(--glow); box-shadow:none}
+.acc-item.open .pm::before,.acc-item.open .pm::after{background:#fff}
+.acc-item.open .pm::after{transform:scaleY(0)}
+.acc-a{overflow:hidden; height:0}
+.acc-a .inner{padding:0 0 24px; color:var(--ink-soft); max-width:60ch}
+
+/* ============================================================
+   Contact
+   ============================================================ */
+.contact{background:var(--ink); color:var(--porcelain); position:relative; z-index:3; overflow:hidden}
+.contact::before{content:""; position:absolute; inset:0; background:radial-gradient(50% 60% at 100% 0%, rgba(255,111,160,.22), transparent 55%), radial-gradient(50% 60% at 0% 100%, rgba(139,123,255,.2), transparent 55%)}
+.contact .eyebrow{color:rgba(247,245,241,.6)} .contact .eyebrow::before{background:var(--porcelain)}
+.c-grid{display:grid; grid-template-columns:1fr 1fr; gap:clamp(34px,5vw,70px)}
+.c-info{display:flex; flex-direction:column; gap:26px}
+.c-info .row{display:flex; gap:16px; align-items:flex-start; padding-bottom:22px; border-bottom:1px solid rgba(247,245,241,.14)}
+.c-info .row .ico{width:44px;height:44px;border-radius:12px; background:rgba(255,255,255,.07); display:grid; place-items:center; flex:none}
+.c-info .row b{display:block; font-size:1.02rem} .c-info .row span{color:rgba(247,245,241,.62); font-size:.92rem}
+.form{display:grid; grid-template-columns:1fr 1fr; gap:16px}
+.field{display:flex; flex-direction:column; gap:8px}
+.field.full{grid-column:span 2}
+.field label{font-size:.78rem; letter-spacing:.1em; text-transform:uppercase; color:rgba(247,245,241,.55)}
+.field input,.field select,.field textarea{
+  font:inherit; color:var(--porcelain); background:rgba(255,255,255,.05); border:1px solid rgba(247,245,241,.16);
+  border-radius:14px; padding:.95em 1.1em; transition:.3s; width:100%;
+}
+.field textarea{resize:vertical; min-height:110px}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none; border-color:var(--g2); background:rgba(255,255,255,.09)}
+.field select option{color:#111}
+.form .btn{grid-column:span 2; --bgc:var(--porcelain); --fg:var(--ink); justify-content:center}
+
+/* ============================================================
+   Footer
+   ============================================================ */
+.footer{position:relative; z-index:3; padding:clamp(60px,8vw,110px) 0 40px}
+.foot-mark{font-family:'Fraunces',serif; font-weight:300; font-size:clamp(3.4rem,15vw,12rem); line-height:.85; letter-spacing:-.03em; background:linear-gradient(180deg,var(--ink),rgba(20,22,26,.12)); -webkit-background-clip:text; background-clip:text; color:transparent; word-break:break-word}
+.foot-bottom{display:flex; justify-content:space-between; gap:20px; flex-wrap:wrap; margin-top:40px; padding-top:26px; border-top:1px solid var(--line); font-size:.86rem; color:var(--ink-soft)}
+.foot-bottom .links{display:flex; gap:22px; flex-wrap:wrap}
+.foot-bottom a:hover{color:var(--ink)}
+
+/* ============================================================
+   Reveal initial states are set in JS (so content shows if JS/GSAP fail)
+   ============================================================ */
+
+/* ============================================================
+   Responsive
+   ============================================================ */
+@media(max-width:980px){
+  .hero-grid{grid-template-columns:1fr; gap:50px}
+  .hero-art{max-width:440px; margin-inline:auto; width:100%}
+  .why-copy{grid-template-columns:1fr}
+  .ba-wrap{grid-template-columns:1fr}
+  .team{grid-template-columns:repeat(2,1fr)}
+  .fin{grid-template-columns:1fr; max-width:480px; margin-inline:auto}
+  .faq-grid,.c-grid{grid-template-columns:1fr}
+  .stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:720px){
+  :root{--pad:18px}
+  .nav-links{display:none}
+  .burger{display:flex}
+  .shead{grid-template-columns:1fr; gap:14px}
+  .bento{grid-template-columns:1fr; }
+  .svc.wide,.svc.tall,.svc.feat,.svc.s2,.svc.s3{grid-column:auto}
+  .svc.feat{flex-direction:column; align-items:flex-start}
+  .team{grid-template-columns:1fr; max-width:420px; margin-inline:auto}
+  .step{grid-template-columns:1fr; gap:0; padding-left:50px}
+  .step .left,.step .right{visibility:visible!important}
+  .step:nth-child(odd) .left:empty,.step:nth-child(even) .right:empty{display:none}
+  .tl-line,.tl-fill{left:9px}
+  .step .node{left:-2px}
+  .form{grid-template-columns:1fr} .field.full{grid-column:auto} .form .btn{grid-column:auto}
+  .hero-meta{gap:18px}
+  .nav-cta .btn:not(.primary){display:none}
+}
+
+/* ============================================================
+   WhatsApp floating shortcut + footer social
+   ============================================================ */
+.wa-fab{
+  position:fixed; right:clamp(16px,2.4vw,30px); bottom:clamp(16px,2.4vw,30px);
+  z-index:48; display:inline-flex; align-items:center;
+  height:62px; border-radius:100px; color:#fff; background:#25D366;
+  box-shadow:0 10px 30px rgba(37,211,102,.42), var(--shadow-md);
+  transition:transform .4s var(--ease), box-shadow .4s var(--ease), opacity .4s var(--ease);
+  will-change:transform;
+}
+.wa-fab .wa-ico{position:relative; z-index:2; flex:none; width:62px; height:62px; display:grid; place-items:center}
+.wa-fab .wa-ico svg{width:30px; height:30px}
+.wa-fab .wa-label{
+  position:relative; z-index:2; max-width:0; overflow:hidden; opacity:0; white-space:nowrap;
+  font-weight:600; font-size:.95rem; line-height:1;
+  transition:max-width .5s var(--ease), opacity .35s ease, margin .5s var(--ease);
+}
+.wa-fab:hover{transform:translateY(-3px); box-shadow:0 16px 42px rgba(37,211,102,.52), var(--shadow-lg)}
+.wa-fab:hover .wa-label{max-width:240px; opacity:1; margin-right:22px}
+.wa-fab:active{transform:translateY(-1px) scale(.98)}
+.wa-fab::after{content:""; position:absolute; inset:0; z-index:1; border-radius:inherit; pointer-events:none; background:#25D366; animation:waPulse 2.8s var(--ease) infinite}
+@keyframes waPulse{0%{transform:scale(1);opacity:.5} 70%,100%{transform:scale(1.45);opacity:0}}
+body.menu-open .wa-fab{opacity:0; pointer-events:none; transform:translateY(16px)}
+@media(max-width:720px){.wa-fab{height:56px} .wa-fab .wa-ico{width:56px;height:56px} .wa-fab .wa-ico svg{width:27px;height:27px}}
+
+.foot-social{display:flex; align-items:center; gap:18px; flex-wrap:wrap; margin-top:30px}
+.foot-social-label{font-size:.78rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink-soft); font-weight:600}
+.social-links{display:flex; gap:12px}
+.social-btn{
+  position:relative; width:46px; height:46px; border-radius:50%; display:grid; place-items:center;
+  color:var(--ink); box-shadow:inset 0 0 0 1px var(--line-strong);
+  background:var(--porcelain-2); overflow:hidden; isolation:isolate;
+  transition:transform .35s var(--ease), box-shadow .35s var(--ease), color .35s var(--ease);
+  will-change:transform;
+}
+.social-btn svg{position:relative; z-index:2; width:20px; height:20px; transition:transform .35s var(--ease)}
+.social-btn::after{content:""; position:absolute; inset:0; z-index:1; border-radius:inherit; background:var(--glow); transform:scale(0); opacity:0; transition:transform .5s var(--ease), opacity .35s ease}
+.social-btn:hover{color:#fff; transform:translateY(-3px); box-shadow:var(--shadow-md)}
+.social-btn:hover::after{transform:scale(1.6); opacity:1}
+.social-btn:hover svg{transform:scale(1.06)}
+
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:.001ms!important; animation-iteration-count:1!important; transition-duration:.05ms!important; scroll-behavior:auto!important}
+  .cursor-glow{display:none}
+  .scroll-cue i::after{display:none}
+}
